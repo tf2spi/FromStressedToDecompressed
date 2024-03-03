@@ -21,13 +21,13 @@ main :: proc() {
 	}
 
 	out_buf: [dynamic]u8
-	last_byte, last_count := -1, u8(0)
+	last_byte, last_count := -1, u16(0)
 	defer delete(out_buf)
 	for i in 0..=len(in_buf) {
-		if i == len(in_buf) || int(in_buf[i]) != last_byte || last_count == 0xff {
+		if i == len(in_buf) || int(in_buf[i]) != last_byte || last_count == 0x100 {
 			if last_count > 3 || last_byte == int(run_byte) {
 				append(&out_buf, run_byte)
-				append(&out_buf, last_count)
+				append(&out_buf, u8(last_count - 1))
 				append(&out_buf, u8(last_byte))
 			} else {
 				for i in 0..<last_count { append(&out_buf, u8(last_byte)) }
